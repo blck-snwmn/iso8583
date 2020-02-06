@@ -22,6 +22,7 @@ func (p *Parser) parseMti() (*MTI, error) {
 
 func (p *Parser) parseBitmap() ([]*Bitmap, error) {
 	bitmaps := []*Bitmap{}
+	// TODO bimap max 3?
 	for {
 		// read 64 bit
 		// TODO check length
@@ -34,8 +35,12 @@ func (p *Parser) parseBitmap() ([]*Bitmap, error) {
 		// TODO in advance, comfirm to alocate 64 size
 		bitmap.fields = []Field{}
 
+		// read one byte at a time
 		for i := 0; i < bitmapLen; i++ {
+			// read one bit at a time
 			for j := 0; j < bitLenPerByte; j++ {
+				// if Nth bit from left set 1
+				// Nth field exists on DataElement
 				if bitmap.original[i]<<j&0x80 == 0x80 {
 					bitmap.fields = append(bitmap.fields, Field(8*i+j+1))
 				}
@@ -44,6 +49,8 @@ func (p *Parser) parseBitmap() ([]*Bitmap, error) {
 
 		bitmaps = append(bitmaps, &bitmap)
 
+		// if 1th bit from left doesn't set 1
+		// next 64bit is not Bitmap
 		if bitmap.original[0]&0x80 != 0x80 {
 			break
 		}
