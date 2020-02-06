@@ -30,7 +30,6 @@ func (p *Parser) parseBitmap() ([]*Bitmap, error) {
 		p.position += bitmapLen
 
 		bitmap := Bitmap{}
-
 		bitmap.original = bitmapByte
 		// TODO in advance, comfirm to alocate 64 size
 		bitmap.fields = []Field{}
